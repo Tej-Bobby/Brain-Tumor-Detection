@@ -10,7 +10,7 @@ from database.models import Prediction
 import shutil
 import os
 import uuid
-
+import traceback
 
 router = APIRouter(
     prefix="/predict",
@@ -47,7 +47,7 @@ def predict(
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        predicted_class, confidence = predict_image(file_path)
+        predicted_class, confidence, probabilities = predict_image(file_path)
 
         prediction_record = Prediction(
             prediction=predicted_class,
@@ -59,16 +59,19 @@ def predict(
 
         return {
             "prediction": predicted_class,
-            "confidence": confidence
+            "confidence": confidence,
+            "probabilities": probabilities
         }
 
     except Exception as e:
 
         db.rollback()
+        print("PREDICTION ERROR:", repr(e))
+        traceback.print_exc()
 
         raise HTTPException(
             status_code=500,
-            detail="Prediction failed"
+            detail=str(e)
         )
 
     finally:

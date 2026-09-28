@@ -71,17 +71,17 @@ if uploaded_file is not None:
                 "Confidence",
                 f"{confidence * 100:.2f}%"
             )
+
             st.subheader("Class Probabilities")
 
-        for class_name, probability in probabilities.items():
+            for class_name, probability in probabilities.items():
 
-            st.write(
-                f"{class_name.capitalize()}: "
-                f"{probability * 100:.2f}%"
-            )
+                st.write(
+                    f"{class_name.capitalize()}: "
+                    f"{probability * 100:.2f}%"
+                )
 
-            st.progress(probability)
-            
+                st.progress(probability)
 
         else:
 
